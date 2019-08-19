@@ -1,0 +1,40 @@
+version: "2"
+
+services:
+  webserver:
+    image: abiosoft/caddy:1.0.0
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+          apk add curl vim bash
+          echo '[1]' >a.json
+          mkdir -p static && echo '{a:1}' >static/a.js
+          /bin/bash -c 'for i in {1..6}; do ping -c 3 webapp; done'
+          caddy -host 'http://0.0.0.0' -port 80 "tls off" "browse" "proxy /api webapp:8080" "log stdout" "errors visible" "pprof"
+    ports:
+      - "8755:80"
+    depends_on:
+      - webapp
+    networks:
+      - default
+
+  webapp:
+    image: python:2.7
+    working_dir: /app
+    command:
+      - /bin/sh
+      - -c
+      - |
+          echo '[1,2]' >b.json
+          mkdir -p api && echo '{"name":"cat"}' >api/cat.json
+          python -u -m SimpleHTTPServer 8080
+    ports:
+      - 80
+    networks:
+      default:
+        aliases:
+          - webapp
+
+networks:
+  default:
