@@ -1,4 +1,4 @@
-version: "2"
+version: "2.2"
 
 services:
   webserver:
@@ -31,6 +31,7 @@ services:
           python -u -m SimpleHTTPServer 8080
     ports:
       - 80
+    scale: 3
     networks:
       default:
         aliases:
