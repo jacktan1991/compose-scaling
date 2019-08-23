@@ -1,4 +1,4 @@
-version: "2.2"
+version: "3"
 
 services:
   webserver:
@@ -31,7 +31,15 @@ services:
           python -u -m SimpleHTTPServer 8080
     ports:
       - 80
-    scale: 3
+    deploy:
+      mode: replicated
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
     networks:
       default:
         aliases:
