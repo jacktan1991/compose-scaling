@@ -18,6 +18,9 @@ services:
       - webapp
     networks:
       - default
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 
   webapp:
     image: python:2.7
@@ -40,6 +43,8 @@ services:
         limits:
           cpus: "0.1"
           memory: 50M
+      placement:
+        constraints: [node.role == worker]
     networks:
       default:
         aliases:
